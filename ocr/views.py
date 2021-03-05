@@ -48,12 +48,10 @@ def index(request):
         keyword = ast.literal_eval(keyword) #str型→dict型へ
         keyword = keyword["data"] #dataを取得
         keyword = keyword.replace('data:image/png;base64,', '')
-        keyword = keyword.encode()
-        keyword = base64.b64decode(keyword)
-        jpg=np.frombuffer(keyword, dtype=np.uint8)
-        #raw image <- jpg
-        img = cv2.imdecode(jpg, cv2.IMREAD_COLOR)
-        #画像を保存する場合
+        keyword = keyword.encode() #str型→bytes型へ
+        keyword = base64.b64decode(keyword) #base64をデコード
+        jpg=np.frombuffer(keyword, dtype=np.uint8) #raw image <- jpg
+        img = cv2.imdecode(jpg, cv2.IMREAD_COLOR) #画像を保存する場合
         print(img)
 
         
