@@ -53,10 +53,14 @@
         const context = canvas.getContext('2d');
         const lastPosition = { x: null, y: null };
         let isDrag = false;
-        let black = "#333333";
+        let black = "#000000";
         let white = "#FFFFFF";
         let currentColor = black;
 
+        function init() {
+            context.fillStyle = 'rgb(255,255,255)';
+            context.fillRect(0, 0, 800, 100);
+        }
         function draw(x, y) {
           if(!isDrag) {
             return;
@@ -79,7 +83,8 @@
         }
       
         function clear() {
-          context.clearRect(0, 0, canvas.width, canvas.height);
+          context.fillStyle = 'rgb(255,255,255)';
+          context.fillRect(0, 0, 800, 100);
         }
       
         function dragStart(event) {
@@ -114,7 +119,7 @@
             clear();
             flag = false;
         }
-
+        init();
         initEventHandler();
     });
 
@@ -129,7 +134,7 @@
 
         .then((json)=>{
           if(json.status){
-            alert(json.status);
+            // alert(json.status);
             document.getElementById("inner").innerHTML = "実行結果:&nbsp;" + json.status;
             // alert("送信に『成功』しました");
           }
@@ -151,7 +156,7 @@
         // const text = searchText.value;
         // postSearchText(item, text);
         const csrftoken = Cookies.get('csrftoken');
-        const canvas = document.getElementById("board").toDataURL("image/png");  // DataURI Schemaが返却される
+        const canvas = document.getElementById("board").toDataURL("image/jpeg");  // DataURI Schemaが返却される
         
         // 送信情報の設定
         const param = {
