@@ -1,0 +1,255 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset = "UTF-8">
+    <link rel = "stylesheet" href = "{% static 'main.css' %}">
+    <link href = "https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel = "stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  </head>
+  <body>
+    <h1>四則演算キャンバス</h1>
+        <!-- <form action = "{% url 'home' %}" method = "POST">
+          <input type = "text" name = "title">
+          {% csrf_token %}
+          <button type = "submit">Send</button>
+      </form> -->
+    <canvas
+      id = "board"
+      width = "800px"
+      height = "100px"
+      style = "border: 1px solid #000000;">ブラウザが対応していません。</canvas>
+
+    <div>
+      <button id = "clear-button">全消し</button>
+    </div>
+
+    <div>
+
+      <button id = "pencil-button"><i class = "fas fa-pen fa-2x"></i></button>
+      <button id = "eraser-button"><i class = "fas fa-eraser fa-2x"></i></button>
+
+      <!-- <form action = "{% url 'home' %}" method = "POST">
+        {% csrf_token %} -->
+        <button id = "download" type = "button">計算</button>
+      <!-- </form> -->
+      <h1 id = "inner">実行結果:&nbsp;</h1>
+      <!-- {% if title %}
+        <h1>{{ title }}</h1>
+        <h1>こんにちは</h1>
+      {% else %}
+      <h1>こんばんは</h1>
+      {% endif %} -->
+
+      
+    </div>
+
+  <script>
+     var flag = true;
+
+    window.addEventListener('load', () => {
+        const canvas = document.querySelector('#board');
+        const context = canvas.getContext('2d');
+        const lastPosition = { x: null, y: null };
+        let isDrag = false;
+        let black = "#333333";
+        let white = "#FFFFFF";
+        let currentColor = black;
+
+        function draw(x, y) {
+          if(!isDrag) {
+            return;
+          }
+          context.lineCap = 'round';
+          context.lineJoin = 'round';
+          context.lineWidth = 5;
+          context.strokeStyle = currentColor;
+          
+          if (lastPosition.x === null || lastPosition.y === null) {
+            context.moveTo(x, y);
+          } else {
+            context.moveTo(lastPosition.x, lastPosition.y);
+          }
+
+          context.lineTo(x, y);
+          context.stroke();
+          lastPosition.x = x;
+          lastPosition.y = y;
+        }
+      
+        function clear() {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      
+        function dragStart(event) {
+          context.beginPath();
+          isDrag = true;
+        }
+        
+        function dragEnd(event) {
+          context.closePath();
+          isDrag = false;
+          lastPosition.x = null;
+          lastPosition.y = null;
+        }
+      
+        function initEventHandler() {
+          document.querySelector('#clear-button').addEventListener('click', clear);
+          document.querySelector('#pencil-button').addEventListener('click', () => {
+            currentColor = black;
+          });
+          document.querySelector('#eraser-button').addEventListener('click', () => {
+            currentColor = white;
+          });
+      
+          canvas.addEventListener('mousedown', dragStart);
+          canvas.addEventListener('mouseup', dragEnd);
+          canvas.addEventListener('mouseout', dragEnd);
+          canvas.addEventListener('mousemove', (event) => {
+            draw(event.layerX, event.layerY);
+          });
+        }
+        if (flag == true) {
+            clear();
+            flag = false;
+        }
+
+        initEventHandler();
+    });
+
+
+    function sendServer(url, param){
+      fetch(url, param)
+        .then((response)=>{
+          console.log(response);
+          // console.log(response.json());
+          return response.json();
+        })
+
+        .then((json)=>{
+          if(json.status){
+            alert(json.status);
+            document.getElementById("inner").innerHTML = "実行結果:&nbsp;" + json.status;
+            // alert("送信に『成功』しました");
+          }
+          else{
+            alert("送信に『失敗』しました");
+            console.log(`[error1] ${json.result}`);
+          }
+        })
+        .catch((error)=>{
+          alert("送信に『失敗』しました");
+          console.log(`[error2] ${error}`);
+        });
+    }
+
+
+    document.getElementById("download").addEventListener("click", function() {
+        // console.log("hoge");
+        // const item = searchItemList.value;
+        // const text = searchText.value;
+        // postSearchText(item, text);
+        const csrftoken = Cookies.get('csrftoken');
+        const canvas = document.getElementById("board").toDataURL("image/png");  // DataURI Schemaが返却される
+        
+        // 送信情報の設定
+        const param = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "X-CSRFToken": csrftoken,
+          },
+          body: JSON.stringify({data: canvas})
+        };
+        // console.log(canvas);
+        // console.log(param);
+        // サーバへ送信
+        // fetch('{% url "home" %}', param)
+        sendServer("{% url 'home' %}", param);
+    });
+
+    // async function saveCanvas() {
+    //   // Canvasのデータを取得
+    //   const csrftoken = Cookies.get('csrftoken');
+    //   const canvas = board.toDataURL("image/jpg");  // DataURI Schemaが返却される
+      
+    //   // 送信情報の設定
+    //   const param = {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       "X-CSRFToken": csrftoken,
+    //     },
+    //     body: '{"coord":{"lon":145.77,"lat":-16.92},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":293.25,"pressure":1019,"humidity":83,"temp_min":289.82,"temp_max":295.37},"wind":{"speed":5.1,"deg":150},"clouds":{"all":75},"rain":{"3h":3},"dt":1435658272,"sys":{"type":1,"id":8166,"message":0.0166,"country":"AU","sunrise":1435610796,"sunset":1435650870},"id":2172797,"name":"Cairns","cod":200}'
+    //   };
+  
+    //   // サーバへ送信
+    //   console.log(csrftoken);
+    //   sendServer("", param);
+
+    // }
+    // document.querySelector("#download").addEventListener("click", ()=>{
+          
+    //     });
+    // function saveCanvas(canvas_id)
+    //   {
+    //     var canvas = document.getElementById(canvas_id);
+    //     // var uri = canvas.toDataURL('image/jpg');
+    //     // if (canvas.msToBlob) {
+    //     //   var blob = toBlob(uri);
+        //   window.navigator.msSaveBlob(blob, 'download.jpg');
+        // } else {
+        //   var a = document.createElement('a');
+        //   a.href = uri;
+        //   a.download = "{% static '/download.jpg'}";
+        //   a.click();
+        // }
+
+
+
+
+      //   var buf = function() {
+      //     var base64 = canvas.toDataURL('image/png'),
+      //         bin = atob(base64.replace(/^.*,/, '')),
+      //         buffer = new Uint8Array(bin.length);
+      //     for (var i = 0; i < bin.length; i++) {
+      //         buffer[i] = bin.charCodeAt(i);
+      //     }
+      //     return buffer;
+      // }
+      //       // Blobを作成
+      //       var blob = new Blob([buf.buffer], {
+      //           type: 'image/png'
+      //       });
+            
+      //       // FormDataとして送信
+      //       var fd = new FormData();
+      //       fd.append("image", blob);
+      //       var request = {
+      //           url: "{% static 'image' %}",
+      //           method: 'POST',
+      //           xhr2: true,
+      //           rawData: fd,
+      //           success: function (response) {
+      //               console.log(response.responseText);
+      //           }
+      //       };
+      //       Ext.Ajax.request(request);
+      //     }
+      </script>
+    </body>
+  </html>
+
+
+
+<!-- <h1>Product category AI</h1>
+<p>Enter title:</p>
+<form action = "{% url 'home' %}" method = "POST">
+    <input type = "text" name = "title">
+    {% csrf_token %}
+    <button type = "submit">Send</button>
+</form>
+{% if title %}
+    <h1>Prediction: {{ title }}</h1>
+{% endif %} -->
