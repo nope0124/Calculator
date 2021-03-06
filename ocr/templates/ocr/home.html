@@ -9,41 +9,30 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   </head>
   <body>
-    <h1>四則演算キャンバス</h1>
-        <!-- <form action = "{% url 'home' %}" method = "POST">
-          <input type = "text" name = "title">
-          {% csrf_token %}
-          <button type = "submit">Send</button>
-      </form> -->
-    <canvas
+    <header>
+      <h1><i class = "fas fa-calculator"></i>&nbsp;四則演算キャンバス</h1>
+    </header>
+    <main>
+      <p>注) 数式は一行で書いてください</p>
+      <canvas
       id = "board"
       width = "800px"
       height = "100px"
       style = "border: 1px solid #000000;">ブラウザが対応していません。</canvas>
 
-    <div>
       <button id = "clear-button">全消し</button>
-    </div>
-
-    <div>
-
-      <button id = "pencil-button"><i class = "fas fa-pen fa-2x"></i></button>
-      <button id = "eraser-button"><i class = "fas fa-eraser fa-2x"></i></button>
-
-      <!-- <form action = "{% url 'home' %}" method = "POST">
-        {% csrf_token %} -->
-        <button id = "download" type = "button">計算</button>
-      <!-- </form> -->
-      <h1 id = "inner">実行結果:&nbsp;</h1>
-      <!-- {% if title %}
-        <h1>{{ title }}</h1>
-        <h1>こんにちは</h1>
-      {% else %}
-      <h1>こんばんは</h1>
-      {% endif %} -->
-
       
-    </div>
+
+      <div>
+
+        <button id = "pencil-button"><i class = "fas fa-pen fa-2x"></i></button>
+        <button id = "eraser-button"><i class = "fas fa-eraser fa-2x"></i></button>
+        <button id = "download" type = "button">計算</button>
+        <h1 id = "inner"></h1>
+      </div>
+    </main>
+      
+    
 
   <script>
      var flag = true;
@@ -138,123 +127,32 @@
             document.getElementById("inner").innerHTML = "実行結果:&nbsp;" + json.status;
             // alert("送信に『成功』しました");
           }
-          else{
-            alert("送信に『失敗』しました");
-            console.log(`[error1] ${json.result}`);
-          }
         })
         .catch((error)=>{
-          alert("送信に『失敗』しました");
+          alert("エラーが発生しました");
           console.log(`[error2] ${error}`);
         });
     }
 
 
     document.getElementById("download").addEventListener("click", function() {
-        // console.log("hoge");
-        // const item = searchItemList.value;
-        // const text = searchText.value;
-        // postSearchText(item, text);
-        const csrftoken = Cookies.get('csrftoken');
-        const canvas = document.getElementById("board").toDataURL("image/jpeg");  // DataURI Schemaが返却される
+      const csrftoken = Cookies.get('csrftoken');
+      const canvas = document.getElementById("board").toDataURL("image/jpeg");  // DataURI Schemaが返却される
         
-        // 送信情報の設定
-        const param = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "X-CSRFToken": csrftoken,
-          },
-          body: JSON.stringify({data: canvas})
-        };
-        // console.log(canvas);
-        // console.log(param);
-        // サーバへ送信
-        // fetch('{% url "home" %}', param)
-        sendServer("{% url 'home' %}", param);
+      // 送信情報の設定
+      const param = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({data: canvas})
+      };
+      // サーバへ送信
+      sendServer("{% url 'home' %}", param);
     });
 
-    // async function saveCanvas() {
-    //   // Canvasのデータを取得
-    //   const csrftoken = Cookies.get('csrftoken');
-    //   const canvas = board.toDataURL("image/jpg");  // DataURI Schemaが返却される
-      
-    //   // 送信情報の設定
-    //   const param = {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json; charset=utf-8",
-    //       "X-CSRFToken": csrftoken,
-    //     },
-    //     body: '{"coord":{"lon":145.77,"lat":-16.92},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":293.25,"pressure":1019,"humidity":83,"temp_min":289.82,"temp_max":295.37},"wind":{"speed":5.1,"deg":150},"clouds":{"all":75},"rain":{"3h":3},"dt":1435658272,"sys":{"type":1,"id":8166,"message":0.0166,"country":"AU","sunrise":1435610796,"sunset":1435650870},"id":2172797,"name":"Cairns","cod":200}'
-    //   };
-  
-    //   // サーバへ送信
-    //   console.log(csrftoken);
-    //   sendServer("", param);
-
-    // }
-    // document.querySelector("#download").addEventListener("click", ()=>{
-          
-    //     });
-    // function saveCanvas(canvas_id)
-    //   {
-    //     var canvas = document.getElementById(canvas_id);
-    //     // var uri = canvas.toDataURL('image/jpg');
-    //     // if (canvas.msToBlob) {
-    //     //   var blob = toBlob(uri);
-        //   window.navigator.msSaveBlob(blob, 'download.jpg');
-        // } else {
-        //   var a = document.createElement('a');
-        //   a.href = uri;
-        //   a.download = "{% static '/download.jpg'}";
-        //   a.click();
-        // }
-
-
-
-
-      //   var buf = function() {
-      //     var base64 = canvas.toDataURL('image/png'),
-      //         bin = atob(base64.replace(/^.*,/, '')),
-      //         buffer = new Uint8Array(bin.length);
-      //     for (var i = 0; i < bin.length; i++) {
-      //         buffer[i] = bin.charCodeAt(i);
-      //     }
-      //     return buffer;
-      // }
-      //       // Blobを作成
-      //       var blob = new Blob([buf.buffer], {
-      //           type: 'image/png'
-      //       });
-            
-      //       // FormDataとして送信
-      //       var fd = new FormData();
-      //       fd.append("image", blob);
-      //       var request = {
-      //           url: "{% static 'image' %}",
-      //           method: 'POST',
-      //           xhr2: true,
-      //           rawData: fd,
-      //           success: function (response) {
-      //               console.log(response.responseText);
-      //           }
-      //       };
-      //       Ext.Ajax.request(request);
-      //     }
-      </script>
-    </body>
-  </html>
-
-
-
-<!-- <h1>Product category AI</h1>
-<p>Enter title:</p>
-<form action = "{% url 'home' %}" method = "POST">
-    <input type = "text" name = "title">
-    {% csrf_token %}
-    <button type = "submit">Send</button>
-</form>
-{% if title %}
-    <h1>Prediction: {{ title }}</h1>
-{% endif %} -->
+    
+    </script>
+  </body>
+</html>

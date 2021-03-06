@@ -7,30 +7,6 @@ import numpy as np
 import keras
 from keras.models import load_model
 
-# import pandas as pd
-# import pickle
-
-# category_data = pd.read_csv("idx2category.csv")
-# idx2category = {row.k: row.v for idx, row in category_data.iterrows()}
-
-# with open("rdmf.pickle", mode = "rb") as f:
-#     model = pickle.load(f)
-
-# def ajax_post_search(request):
-#     keyword = request.GET.get('title')
-
-#     # 検索キーワードがあればそれで絞り込み、なければ全ての記事
-#     # JSONシリアライズするには、Querysetをリストにする必要あり
-#     if keyword:
-#         title_list = [post.title for post in Post.objects.filter(title__icontains=keyword)]  # タイトルにキーワードを含む。大文字小文字の区別なし
-#     else:
-#         title_list = [post.title for post in Post.objects.all()]
-
-#     d = {
-#         'title_list': title_list,
-#     }
-#     return JsonResponse(d)
-
 def img2frm(img):
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     for i in range(100):
@@ -133,9 +109,3 @@ def index(request):
         data = {"status":ans}
         
         return JsonResponse(data = data)
-        # return render(
-        #     request,
-        #     "ocr/home.html",
-        #     {"title":100}
-        # )
-        
