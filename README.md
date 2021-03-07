@@ -11,3 +11,6 @@ Django=2.2.16<br>
 opencv-python=4.2.0.34<br>
 Keras=2.4.3<br>
 numpy=1.18.5<br>
+
+## モデルデータ
+<a href = "https://signate.jp/competitions/100">こちら</a>のデータを拝借しました。
