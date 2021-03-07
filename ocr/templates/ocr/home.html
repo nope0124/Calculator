@@ -16,8 +16,8 @@
       <p>注) 数式は一行で書いてください</p>
       <canvas
       id = "board"
-      width = "800px"
-      height = "100px"
+      width = "1000px"
+      height = "300px"
       style = "border: 1px solid #000000;">ブラウザが対応していません。</canvas>
       <div>
         <button id = "clear-button">全消し</button>
@@ -47,11 +47,25 @@
         let black = "#000000";
         let white = "#FFFFFF";
         let currentColor = black;
+        const W = 1000;
+        const H = 300;
+        const line = 3;
+        
 
         function init() {
             context.fillStyle = 'rgb(255,255,255)';
-            context.fillRect(0, 0, 800, 100);
+            context.fillRect(0, 0, W, H);
+            context.strokeStyle = "#909090";
+            context.lineWidth = 1;
+            for (let i = 0; i < line - 1; i++) {
+              context.beginPath();
+              context.moveTo(50, i * 100 + 100);
+              context.lineTo(950, i * 100 + 100);
+              context.stroke();
+            }
+            context.strokeStyle = currentColor;
         }
+
         function draw(x, y) {
           if(!isDrag) {
             return;
@@ -74,8 +88,17 @@
         }
       
         function clear() {
-          context.fillStyle = 'rgb(255,255,255)';
-          context.fillRect(0, 0, 800, 100);
+            context.fillStyle = 'rgb(255,255,255)';
+            context.fillRect(0, 0, W, H);
+            context.strokeStyle = "#909090";
+            context.lineWidth = 1;
+            for (let i = 0; i < line - 1; i++) {
+              context.beginPath();
+              context.moveTo(50, i * 100 + 100);
+              context.lineTo(950, i * 100 + 100);
+              context.stroke();
+            }
+            context.strokeStyle = currentColor;
         }
       
         function dragStart(event) {
@@ -126,7 +149,7 @@
         .then((json)=>{
           if(json.status){
             // alert(json.status);
-            document.getElementById("inner").innerHTML = "実行結果:&nbsp;" + json.status;
+            document.getElementById("inner").innerHTML = "実行結果:" + json.status;
             // alert("送信に『成功』しました");
           }
         })
