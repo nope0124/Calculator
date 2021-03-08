@@ -10,10 +10,11 @@
   </head>
   <body>
     <header>
-      <h1><i class = "fas fa-calculator"></i>&nbsp;四則演算キャンバス</h1>
+      <h1><i class = "fas fa-calculator"></i>&nbsp;電卓キャンバス</h1>
     </header>
     <main>
-      <p>注) 数式は一行で書いてください</p>
+      <p>注) 行を超えての計算はできません。また、正しく識別するために十分に文字間を空けて入力してください。
+      </p>
       <canvas
       id = "board"
       width = "1000px"
@@ -120,6 +121,7 @@
           });
           document.querySelector('#eraser-button').addEventListener('click', () => {
             currentColor = white;
+            
           });
       
           canvas.addEventListener('mousedown', dragStart);

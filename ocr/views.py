@@ -31,12 +31,14 @@ def img2frm(img):
         9: "9",
         10: "+",
         11: "-",
+        12: "*",
+        13: "/",
     }
 
     for sp in range(SP):
         
         bw = [0 for i in range(W)]
-        for i in range(H // SP):
+        for i in range(10, H // SP):
             for j in range(W):
                 if bin_img[i + sp * H // SP][j] == 255:
                     bw[j] = 1
@@ -54,13 +56,25 @@ def img2frm(img):
         if s != -1:
             lr.append([s, W - 1])
             
+        ud = []
+        
+        for p in lr:
+            s = 2147483647
+            t = -1
+            for i in range(10, H // SP):
+                for j in range(p[0], p[1] + 1):
+                    if bin_img[i + sp * H // SP][j] == 255:
+                        s = min(s, i)
+                        t = max(t, i)
+            ud.append([s, t])
+
         pixels_test = []
 
-        for p in lr:
-            tmp_img = np.zeros((H // SP, p[1] - p[0] + 1 + 30), dtype='uint8')
-            for i in range(H // SP):
-                for j in range(p[0], p[1] + 1):
-                    tmp_img[i][j + 15 - p[0]] = bin_img[i + sp * H // SP][j]
+        for p in range(len(lr)):
+            tmp_img = np.zeros((ud[p][1] - ud[p][0] + 1 + 30, lr[p][1] - lr[p][0] + 1 + 30), dtype='uint8')
+            for i in range(ud[p][0], ud[p][1] + 1):
+                for j in range(lr[p][0], lr[p][1] + 1):
+                    tmp_img[i + 15 - ud[p][0]][j + 15 - lr[p][0]] = bin_img[i + sp * H // SP][j]
             pixels_test.append(cv2.resize(tmp_img, (28, 28)))
         S = np.array(pixels_test) / 255
         S = S.reshape(-1, 28, 28, 1)
@@ -68,17 +82,29 @@ def img2frm(img):
             continue
         ans += "<br>"
         st = ""
+        dis = ""
         pred = model.predict(S)
         preds = np.argmax(pred, axis=1)
         for i in preds:
-            st += num2code[i]
+            if i < 10:
+                st += num2code[i]
+                dis += num2code[i]
+            elif i < 12:
+                st += " " + num2code[i] + " "
+                dis += " " + num2code[i] + " "
+            elif i == 12:
+                st += " " + num2code[i] + " "
+                dis += " × "
+            elif i == 13:
+                st += " " + num2code[i] + " "
+                dis += " ÷ "
         try:
             sum = eval(st)
-            ans += st + "=" + str(sum)
+            ans += dis + " = " + str(sum)
         except ZeroDivisionError:
-            ans += st + " " + "(0除算が発生しています)"
+            ans += dis + " " + "(0除算が発生しています)"
         except SyntaxError:
-            ans += st + " " + "(計算式が間違っています)"
+            ans += dis + " " + "(計算式が間違っています)"
         
     return ans
 
