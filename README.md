@@ -1,6 +1,6 @@
 # 四則演算キャンバス
 キャンバスに数式を描き、計算ボタンを押すと自動で計算してくれます。<br/>
-現在使える文字は0~9までの数字、+-の符号だけです。
+現在使える文字は0~9までの数字、+-×÷の符号だけです。
 
 ## 参考画像
 <img src = "https://raw.githubusercontent.com/nope0124/CalculatorCanvas/master/img.png" height = "300">
