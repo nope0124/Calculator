@@ -124,6 +124,8 @@ def index(request):
         # result = model.predict(title)[0]
         # print("result: ", result)
         # pred = idx2category[result]
+        data = {"status":"ok"}
+        return JsonResponse(data = data)
         keyword = request.body #bodyを取得
         keyword = keyword.decode() #bytes型→str型へ
         keyword = ast.literal_eval(keyword) #str型→dict型へ
