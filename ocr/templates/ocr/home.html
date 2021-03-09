@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset = "UTF-8">
+    <title>電卓キャンバス</title>
     <link rel = "stylesheet" href = "{% static 'main.css' %}">
     <link href = "https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel = "stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
@@ -215,7 +216,7 @@
         .then((json)=>{
           if(json.status){
             // alert(json.status);
-            document.getElementById("inner").innerHTML = "実行結果:" + json.status;
+            document.getElementById("inner").innerHTML = "計算結果:" + json.status;
             // alert("送信に『成功』しました");
           }
         })
