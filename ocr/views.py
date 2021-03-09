@@ -100,14 +100,14 @@ def img2frm(img):
             elif i == 13:
                 st += " " + num2code[i] + " "
                 dis += " ÷ "
-        ans += st
-#        try:
-#            sum = eval(st)
-#            ans += dis + " = " + str(sum)
-#        except ZeroDivisionError:
-#            ans += dis + " " + "(0除算が発生しています)"
-#        except SyntaxError:
-#            ans += dis + " " + "(計算式が間違っています)"
+        
+        try:
+            sum = eval(st)
+            ans += dis + " = " + str(sum)
+        except ZeroDivisionError:
+            ans += dis + " " + "(0除算が発生しています)"
+        except SyntaxError:
+            ans += dis + " " + "(計算式が間違っています)"
         
     return ans
 
