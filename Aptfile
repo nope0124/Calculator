@@ -1,5 +1,5 @@
 libsm6
-libgl1-mesa-dev
+libgl1
 libxrender1
 libfontconfig1
 libice6
