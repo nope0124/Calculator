@@ -124,7 +124,7 @@ def index(request):
         # result = model.predict(title)[0]
         # print("result: ", result)
         # pred = idx2category[result]
-        d = {"status":"ok"}
+#        d = {"status":"ok"}
 #        return render(
 #            request,
 #            "ocr/home.html",
