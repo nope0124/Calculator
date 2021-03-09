@@ -5,7 +5,8 @@ import base64
 import cv2
 import numpy as np
 import keras
-from keras.models import load_model
+#from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 def img2frm(img):
     W = 1000
@@ -17,7 +18,8 @@ def img2frm(img):
         for j in range(W):
             gray_img[i][j] = 255 - gray_img[i][j]
     ret, bin_img = cv2.threshold(gray_img, 128, 255, cv2.THRESH_BINARY)
-    model = keras.models.load_model('model.h5', compile=False)
+#    model = keras.models.load_model('model.h5', compile=False)
+    model = load_model('model.h5', compile = False)
     num2code = {
         0: "0",
         1: "1",
