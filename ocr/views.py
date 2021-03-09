@@ -116,7 +116,6 @@ def index(request):
         return render(
             request,
             "ocr/home.html",
-            
         )
     elif request.method == "POST":
         # keyword = request.GET["data"]
@@ -125,7 +124,14 @@ def index(request):
         # print("result: ", result)
         # pred = idx2category[result]
         data = {"status":"ok"}
+        return render(
+            request,
+            "ocr/home.html",
+            {"pred": -1}
+        )
+
         return JsonResponse(data = data)
+        
         keyword = request.body #bodyを取得
         keyword = keyword.decode() #bytes型→str型へ
         keyword = ast.literal_eval(keyword) #str型→dict型へ

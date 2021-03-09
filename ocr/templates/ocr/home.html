@@ -32,7 +32,25 @@
         <button id = "eraser-button"><i class = "fas fa-eraser fa-2x"></i></button>
         <button id = "download" type = "button">計算</button>
         <h1 id = "inner"></h1>
+
       </div>
+      <form action = "{% url 'home' %}" method = "POST">
+        <input type = "text" name = "user_id" style = "font-size: 2em; width: 300px;" >
+        {% csrf_token %}
+        <button type = "submit">Send</button>
+    </form>
+    {% if pred %}
+        {% if pred >= 95 %}
+            <h1>@{{ user_name }}さんのBot類似度: 95%以上</h1>
+        {% elif pred == -1 %}
+            <h1>ユーザが存在しません。</h1>
+        {% elif pred <= 5 %}
+            <h1>@{{ user_name }}さんのBot類似度: 5%以下</h1>
+        {% else %}
+            <h1>@{{ user_name }}さんのBot類似度: {{ pred }}%</h1>
+        {% endif %}
+        
+    {% endif %}
     </main>
       
     
