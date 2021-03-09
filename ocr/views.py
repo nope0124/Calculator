@@ -123,14 +123,14 @@ def index(request):
         # result = model.predict(title)[0]
         # print("result: ", result)
         # pred = idx2category[result]
-        data = {"status":"ok"}
-        return render(
-            request,
-            "ocr/home.html",
-            {"pred": -1}
-        )
+        d = {"status":"ok"}
+#        return render(
+#            request,
+#            "ocr/home.html",
+#            {"pred": -1}
+#        )
 
-        return JsonResponse(data = data)
+        return JsonResponse(data = d)
         
         keyword = request.body #bodyを取得
         keyword = keyword.decode() #bytes型→str型へ
