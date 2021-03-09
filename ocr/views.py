@@ -38,13 +38,13 @@ from tensorflow.keras.models import load_model
 #    }
 #
 #    for sp in range(SP):
-#        
+#
 #        bw = [0 for i in range(W)]
 #        for i in range(10, H // SP):
 #            for j in range(W):
 #                if bin_img[i + sp * H // SP][j] == 255:
 #                    bw[j] = 1
-#                    
+#
 #        lr = []
 #        s = -1
 #        for i in range(W):
@@ -57,9 +57,9 @@ from tensorflow.keras.models import load_model
 #                    s = -1
 #        if s != -1:
 #            lr.append([s, W - 1])
-#            
+#
 #        ud = []
-#        
+#
 #        for p in lr:
 #            s = 2147483647
 #            t = -1
@@ -107,7 +107,7 @@ from tensorflow.keras.models import load_model
 #            ans += dis + " " + "(0除算が発生しています)"
 #        except SyntaxError:
 #            ans += dis + " " + "(計算式が間違っています)"
-#        
+#
 #    return ans
 
 
@@ -130,18 +130,20 @@ def index(request):
 #            {"pred": -1}
 #        )
 
-        return JsonResponse(data = d)
         
-#        keyword = request.body #bodyを取得
-#        keyword = keyword.decode() #bytes型→str型へ
-#        keyword = ast.literal_eval(keyword) #str型→dict型へ
-#        keyword = keyword["data"] #dataを取得
-#        keyword = keyword.replace('data:image/jpeg;base64,', '')
-#        # print(keyword)
-#        keyword = keyword.encode() #str型→bytes型へ
-#        keyword = base64.b64decode(keyword) #base64をデコード
-#        jpg=np.frombuffer(keyword, dtype=np.uint8) #raw image <- jpg
-#        img = cv2.imdecode(jpg, cv2.IMREAD_COLOR) #画像を保存する場合
+        
+        keyword = request.body #bodyを取得
+        keyword = keyword.decode() #bytes型→str型へ
+        keyword = ast.literal_eval(keyword) #str型→dict型へ
+        keyword = keyword["data"] #dataを取得
+        keyword = keyword.replace('data:image/jpeg;base64,', '')
+        
+        # print(keyword)
+        keyword = keyword.encode() #str型→bytes型へ
+        keyword = base64.b64decode(keyword) #base64をデコード
+        jpg=np.frombuffer(keyword, dtype=np.uint8) #raw image <- jpg
+        img = cv2.imdecode(jpg, cv2.IMREAD_COLOR) #画像を保存する場合
+        return JsonResponse(data = d)
 #        ans = img2frm(img)
 #
 #        data = {"status":ans}
