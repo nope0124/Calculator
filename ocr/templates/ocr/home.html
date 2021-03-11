@@ -8,12 +8,10 @@
     <link rel = "stylesheet" href = "{% static 'main.css' %}">
     <link href = "https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel = "stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    <script>
+    <!-- <script>
       var flag = true;
       var canvas;
       var context;
-      const lastPosition = { x: null, y: null };
-      let isDrag = false;
       let black = "#000000";
       let white = "#FFFFFF";
       let currentColor = black;
@@ -26,77 +24,80 @@
       function init() {
         canvas = document.querySelector('#board');
         context = canvas.getContext('2d');
-          canvas.addEventListener("touchstart",onDown,false);
-          canvas.addEventListener("touchmove",onMove,false);
-          canvas.addEventListener("touchend",onUp,false);
-          canvas.addEventListener("mousedown",onMouseDown,false);
-          canvas.addEventListener("mousemove",onMouseMove,false);
-          canvas.addEventListener("mouseup",onMouseUp,false);
-          context.lineCap = 'round';
-          context.lineJoin = 'round';
-          context.fillStyle = 'rgb(255,255,255)';
-          context.fillRect(0, 0, W, H);
-          context.strokeStyle = "#909090";
-          context.lineWidth = 1;
-          for (let i = 0; i < line - 1; i++) {
-              context.beginPath();
-              context.moveTo(50, i * 100 + 100);
-              context.lineTo(950, i * 100 + 100);
-              context.stroke();
-          }
-          context.strokeStyle = currentColor;
+        canvas.addEventListener("touchstart",onDown,false);
+        canvas.addEventListener("touchmove",onMove,false);
+        canvas.addEventListener("touchend",onUp,false);
+        canvas.addEventListener("mousedown",onMouseDown,false);
+        canvas.addEventListener("mousemove",onMouseMove,false);
+        canvas.addEventListener("mouseup",onMouseUp,false);
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.fillStyle = 'rgb(255,255,255)';
+        context.fillRect(0, 0, W, H);
+        context.strokeStyle = "#909090";
+        context.lineWidth = 1;
+        for (let i = 0; i < line - 1; i++) {
+          context.beginPath();
+          context.moveTo(50, i * 100 + 100);
+          context.lineTo(950, i * 100 + 100);
+          context.stroke();
+        }
+        context.strokeStyle = currentColor;
       }
 
       function onDown(evt){
-          mflag = true;
-          ox = evt.touches[0].pageX - evt.target.getBoundingClientRect().left;
-          oy = evt.touches[0].pageY - evt.target.getBoundingClientRect().top;
+        mflag = true;
+        ox = evt.touches[0].pageX - evt.target.getBoundingClientRect().left;
+        oy = evt.touches[0].pageY - evt.target.getBoundingClientRect().top;
+        evt.stopPropagation();
+      }
+
+      function onMove(evt){
+        if(mflag){
+          x = evt.touches[0].pageX - evt.target.getBoundingClientRect().left;
+          y = evt.touches[0].pageY - evt.target.getBoundingClientRect().top;
+          drawLine();
+          ox = x;
+          oy = y;
+          evt.preventDefault();
           evt.stopPropagation();
         }
+      }
 
-        function onMove(evt){
-          if(mflag){
-            x = evt.touches[0].pageX - evt.target.getBoundingClientRect().left;
-            y = evt.touches[0].pageY - evt.target.getBoundingClientRect().top;
-            drawLine();
-            ox = x;
-            oy = y;
-            evt.preventDefault();
-            evt.stopPropagation();
-          }
-        }
+      function onUp(evt){
+        mflag = false;
+        evt.stopPropagation();
+      }
 
-        function onUp(evt){
-          mflag = false;
-          evt.stopPropagation();
+      function onMouseDown(evt){
+        ox = evt.clientX - evt.target.getBoundingClientRect().left;
+        oy = evt.clientY - evt.target.getBoundingClientRect().top ;
+        mflag = true;
+      }
+
+      function onMouseMove(evt){
+        if (mflag) {
+          x = evt.clientX - evt.target.getBoundingClientRect().left;
+          y = evt.clientY - evt.target.getBoundingClientRect().top ;
+          drawLine();
+          ox = x;
+          oy = y;
         }
-        function onMouseDown(evt){
-          ox = evt.clientX - evt.target.getBoundingClientRect().left;
-          oy = evt.clientY - evt.target.getBoundingClientRect().top ;
-          mflag = true;
-        }
-        function onMouseMove(evt){
-          if (mflag) {
-            x = evt.clientX - evt.target.getBoundingClientRect().left;
-            y = evt.clientY - evt.target.getBoundingClientRect().top ;
-            drawLine();
-            ox = x;
-            oy = y;
-          }
-        }
-        function onMouseUp(event){
-          mflag = false;
-        }
+      }
+
+      function onMouseUp(event){
+        mflag = false;
+      }
         
 
-        function drawLine(){
-          context.strokeStyle = currentColor;
-          context.lineWidth = 5;
-          context.beginPath();
-          context.moveTo(ox,oy);
-          context.lineTo(x,y);
-          context.stroke();
-        }
+      function drawLine(){
+        context.strokeStyle = currentColor;
+        context.lineWidth = 5;
+        context.beginPath();
+        context.moveTo(ox,oy);
+        context.lineTo(x,y);
+        context.stroke();
+      }
 
         // function draw(x, y) {
         //   if(!isDrag) {
@@ -119,28 +120,28 @@
         //   lastPosition.y = y;
         // }
       
-        function pencil() {
-          currentColor = black;
-        }
+      function pencil() {
+        currentColor = black;
+      }
 
-        function eraser() {
-          currentColor = white;
-        }
+      function eraser() {
+        currentColor = white;
+      }
 
 
-        function clearCan(){
-          context.fillStyle="rgb(255,255,255)";
-          context.fillRect(0,0,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
-          context.strokeStyle = "#909090";
-            context.lineWidth = 1;
-            for (let i = 0; i < line - 1; i++) {
-              context.beginPath();
-              context.moveTo(50, i * 100 + 100);
-              context.lineTo(950, i * 100 + 100);
-              context.stroke();
-            }
-            context.strokeStyle = currentColor;
+      function clearCan(){
+        context.fillStyle="rgb(255,255,255)";
+        context.fillRect(0,0,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+        context.strokeStyle = "#909090";
+        context.lineWidth = 1;
+        for (let i = 0; i < line - 1; i++) {
+          context.beginPath();
+          context.moveTo(50, i * 100 + 100);
+          context.lineTo(950, i * 100 + 100);
+          context.stroke();
         }
+        context.strokeStyle = currentColor;
+      }
     </script>
   </head>
   <body onload="init();">
@@ -171,7 +172,7 @@
         <button id = "download" type = "button">計算</button>
         <h1 id = "inner"></h1>
 
-      </div>
+      </div> -->
       <!-- <form action = "{% url 'home' %}" method = "POST">
         <input type = "text" name = "user_id" style = "font-size: 2em; width: 300px;" >
         {% csrf_token %}
@@ -189,8 +190,85 @@
         {% endif %}
         
     {% endif %} -->
-    </main>
-      
+    <!-- </main> -->
+    <script>
+      var can;
+      var ct;
+      var ox=0,oy=0,x=0,y=0;
+      var mf=false;
+        function mam_draw_init(){
+          //初期設定
+          can=document.getElementById("can");
+          can.addEventListener("touchstart",onDown,false);
+          can.addEventListener("touchmove",onMove,false);
+          can.addEventListener("touchend",onUp,false);
+          can.addEventListener("mousedown",onMouseDown,false);
+          can.addEventListener("mousemove",onMouseMove,false);
+          can.addEventListener("mouseup",onMouseUp,false);
+          ct=can.getContext("2d");
+          ct.strokeStyle="#000000";
+          ct.lineWidth=5;
+          ct.lineJoin="round";
+          ct.lineCap="round";
+          clearCan();
+        }
+        function onDown(event){
+          mf=true;
+          ox=event.touches[0].pageX-event.target.getBoundingClientRect().left;
+          oy=event.touches[0].pageY-event.target.getBoundingClientRect().top;
+          event.stopPropagation();
+        }
+        function onMove(event){
+          if(mf){
+            x=event.touches[0].pageX-event.target.getBoundingClientRect().left;
+            y=event.touches[0].pageY-event.target.getBoundingClientRect().top;
+            drawLine();
+            ox=x;
+            oy=y;
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+        function onUp(event){
+          mf=false;
+          event.stopPropagation();
+        }
+        function onMouseDown(event){
+          ox=event.clientX-event.target.getBoundingClientRect().left;
+          oy=event.clientY-event.target.getBoundingClientRect().top ;
+          mf=true;
+        }
+        function onMouseMove(event){
+          if(mf){
+            x=event.clientX-event.target.getBoundingClientRect().left;
+            y=event.clientY-event.target.getBoundingClientRect().top ;
+            drawLine();
+            ox=x;
+            oy=y;
+          }
+        }
+        function onMouseUp(event){
+          mf=false;
+        }
+        function drawLine(){
+          ct.beginPath();
+          ct.moveTo(ox,oy);
+          ct.lineTo(x,y);
+          ct.stroke();
+        }
+        function clearCan(){
+          ct.fillStyle="rgb(255,255,255)";
+          ct.fillRect(0,0,can.getBoundingClientRect().width,can.getBoundingClientRect().height);
+        }
+      </script>
+      </head>
+      <body onload="mam_draw_init();">
+          <h3>手書きお絵かきJavascriptサンプル</h3>
+          <div style="border:solid 1px #000000;width:400px;" id="candiv">
+            <canvas id="can" width="400px" height="300px"></canvas>
+          </div>
+          <input type="button" onClick="clearCan();" value="クリア" style="width:100;height:30;" data-inline="true" />
+      </body>
     
 
   <script>
@@ -265,44 +343,44 @@
 
 
 
-    function sendServer(url, param){
-      fetch(url, param)
-        .then((response)=>{
-          // console.log(response);
-          // console.log(response.json());
-          return response.json();
-        })
+    // function sendServer(url, param){
+    //   fetch(url, param)
+    //     .then((response)=>{
+    //       // console.log(response);
+    //       // console.log(response.json());
+    //       return response.json();
+    //     })
 
-        .then((json)=>{
-          if(json.status){
-            // alert(json.status);
-            document.getElementById("inner").innerHTML = "計算結果:" + json.status;
-            // alert("送信に『成功』しました");
-          }
-        })
-        .catch((error)=>{
-          alert("エラーが発生しました");
-          console.log(`[error2] ${error}`);
-        });
-    }
+    //     .then((json)=>{
+    //       if(json.status){
+    //         // alert(json.status);
+    //         document.getElementById("inner").innerHTML = "計算結果:" + json.status;
+    //         // alert("送信に『成功』しました");
+    //       }
+    //     })
+    //     .catch((error)=>{
+    //       alert("エラーが発生しました");
+    //       console.log(`[error2] ${error}`);
+    //     });
+    // }
 
 
-    document.getElementById("download").addEventListener("click", function() {
-      const csrftoken = Cookies.get('csrftoken');
-      const canvas = document.getElementById("board").toDataURL("image/jpeg");  // DataURI Schemaが返却される
+    // document.getElementById("download").addEventListener("click", function() {
+    //   const csrftoken = Cookies.get('csrftoken');
+    //   const canvas = document.getElementById("board").toDataURL("image/jpeg");  // DataURI Schemaが返却される
         
-      // 送信情報の設定
-      const param = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "X-CSRFToken": csrftoken,
-        },
-        body: JSON.stringify({data: canvas})
-      };
-      // サーバへ送信
-      sendServer("{% url 'home' %}", param);
-    });
+    //   // 送信情報の設定
+    //   const param = {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       "X-CSRFToken": csrftoken,
+    //     },
+    //     body: JSON.stringify({data: canvas})
+    //   };
+    //   // サーバへ送信
+    //   sendServer("{% url 'home' %}", param);
+    // });
 
     
     </script>
