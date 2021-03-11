@@ -9,7 +9,7 @@
     <link href = "https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel = "stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   </head>
-  <body>
+  <body onload="init();">
     <header>
       <h1><i class = "fas fa-calculator"></i>&nbsp;電卓キャンバス</h1>
     </header>
@@ -25,15 +25,15 @@
       height = "300px"
       style = "border: 1px solid #000000;">ブラウザが対応していません。</canvas>
       <div>
-        <button id = "clear-button">全消し</button>
+        <button id = "clear-button" onClick="clearCan();">全消し</button>
       </div>
       
       
 
       <div>
 
-        <button id = "pencil-button"><i class = "fas fa-pen fa-2x"></i></button>
-        <button id = "eraser-button"><i class = "fas fa-eraser fa-2x"></i></button>
+        <button id = "pencil-button" onClick="pencil();"><i class = "fas fa-pen fa-2x"></i></button>
+        <button id = "eraser-button" onClick="eraser();"><i class = "fas fa-eraser fa-2x"></i></button>
         <button id = "download" type = "button">計算</button>
         <h1 id = "inner"></h1>
 
@@ -60,42 +60,44 @@
     
 
   <script>
-     var flag = true;
 
-    
-    window.addEventListener('load', () => {
-        const canvas = document.querySelector('#board');
-        const context = canvas.getContext('2d');
-        const lastPosition = { x: null, y: null };
-        let isDrag = false;
-        let black = "#000000";
-        let white = "#FFFFFF";
-        let currentColor = black;
-        const W = 1000;
-        const H = 300;
-        const line = 3;
-        var ox = 0, oy =0 ,x = 0,y = 0;
-        var mflag = false;
+      var flag = true;
+      const canvas = document.querySelector('#board');
+      const context = canvas.getContext('2d');
+      const lastPosition = { x: null, y: null };
+      let isDrag = false;
+      let black = "#000000";
+      let white = "#FFFFFF";
+      let currentColor = black;
+      const W = 1000;
+      const H = 300;
+      const line = 3;
+      var ox = 0, oy =0 ,x = 0,y = 0;
+      var mflag = false;
 
-        function init() {
-            canvas.addEventListener("touchstart",onDown,false);
-            canvas.addEventListener("touchmove",onMove,false);
-            canvas.addEventListener("touchend",onUp,false);
-            context.fillStyle = 'rgb(255,255,255)';
-            context.fillRect(0, 0, W, H);
-            context.strokeStyle = "#909090";
-            context.lineWidth = 1;
-            for (let i = 0; i < line - 1; i++) {
+      function init() {
+          canvas.addEventListener("touchstart",onDown,false);
+          canvas.addEventListener("touchmove",onMove,false);
+          canvas.addEventListener("touchend",onUp,false);
+          canvas.addEventListener("mousedown",onMouseDown,false);
+          canvas.addEventListener("mousemove",onMouseMove,false);
+          canvas.addEventListener("mouseup",onMouseUp,false);
+          context.lineCap = 'round';
+          context.lineJoin = 'round';
+          context.fillStyle = 'rgb(255,255,255)';
+          context.fillRect(0, 0, W, H);
+          context.strokeStyle = "#909090";
+          context.lineWidth = 1;
+          for (let i = 0; i < line - 1; i++) {
               context.beginPath();
               context.moveTo(50, i * 100 + 100);
               context.lineTo(950, i * 100 + 100);
               context.stroke();
-            }
-            context.strokeStyle = currentColor;
-            
-        }
+          }
+          context.strokeStyle = currentColor;
+      }
 
-        function onDown(evt){
+      function onDown(evt){
           mflag = true;
           ox = evt.touches[0].pageX - evt.target.getBoundingClientRect().left;
           oy = evt.touches[0].pageY - evt.target.getBoundingClientRect().top;
@@ -118,6 +120,24 @@
           mflag = false;
           evt.stopPropagation();
         }
+        function onMouseDown(evt){
+          ox = evt.clientX - evt.target.getBoundingClientRect().left;
+          oy = evt.clientY - evt.target.getBoundingClientRect().top ;
+          mflag = true;
+        }
+        function onMouseMove(evt){
+          if (mflag) {
+            x = evt.clientX - evt.target.getBoundingClientRect().left;
+            y = evt.clientY - evt.target.getBoundingClientRect().top ;
+            drawLine();
+            ox = x;
+            oy = y;
+          }
+        }
+        function onMouseUp(event){
+          mflag = false;
+        }
+        
 
         function drawLine(){
           context.strokeStyle = currentColor;
@@ -149,10 +169,74 @@
           lastPosition.y = y;
         }
       
-        function clear() {
-            context.fillStyle = 'rgb(255,255,255)';
-            context.fillRect(0, 0, W, H);
-            context.strokeStyle = "#909090";
+        function pencil() {
+          currentColor = black;
+        }
+
+        function eraser() {
+          currentColor = white;
+        }
+        // function clear() {
+        //   context.fillStyle="rgb(255,255,255)";
+        //   context.fillRect(0,0,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+        //   context.strokeStyle = "#909090";
+        //     context.lineWidth = 1;
+        //     for (let i = 0; i < line - 1; i++) {
+        //       context.beginPath();
+        //       context.moveTo(50, i * 100 + 100);
+        //       context.lineTo(950, i * 100 + 100);
+        //       context.stroke();
+        //     }
+        //     context.strokeStyle = currentColor;
+        // }
+      
+    //     function dragStart(event) {
+    //       context.beginPath();
+    //       isDrag = true;
+    //     }
+        
+    //     function dragEnd(event) {
+    //       context.closePath();
+    //       isDrag = false;
+    //       lastPosition.x = null;
+    //       lastPosition.y = null;
+    //     }
+      
+    //     function initEventHandler() {
+          
+    //       document.querySelector('#clear-button').addEventListener('click', clear);
+    //       document.querySelector('#pencil-button').addEventListener('click', () => {
+    //         currentColor = black;
+    //       });
+    //       document.querySelector('#eraser-button').addEventListener('click', () => {
+    //         currentColor = white;
+            
+    //       });
+    //       canvas.addEventListener("touchmove", function(evt) {
+    //           evt.preventDefault();
+    //       }, false);
+    //       canvas.addEventListener('mousedown', dragStart);
+    //       canvas.addEventListener('mouseup', dragEnd);
+    //       canvas.addEventListener('mouseout', dragEnd);
+    //       canvas.addEventListener('mousemove', (evt) => {
+    //         draw(evt.layerX, evt.layerY);
+    //       });
+          
+    //     }
+    //     // if (flag == true) {
+    //     //     clear();
+    //     //     flag = false;
+    //     // }
+        
+        
+    //     // initEventHandler();
+    // // });
+
+
+    function clearCan(){
+          context.fillStyle="rgb(255,255,255)";
+          context.fillRect(0,0,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+          context.strokeStyle = "#909090";
             context.lineWidth = 1;
             for (let i = 0; i < line - 1; i++) {
               context.beginPath();
@@ -162,47 +246,15 @@
             }
             context.strokeStyle = currentColor;
         }
-      
-        function dragStart(event) {
-          context.beginPath();
-          isDrag = true;
-        }
-        
-        function dragEnd(event) {
-          context.closePath();
-          isDrag = false;
-          lastPosition.x = null;
-          lastPosition.y = null;
-        }
-      
-        function initEventHandler() {
-          
-          document.querySelector('#clear-button').addEventListener('click', clear);
-          document.querySelector('#pencil-button').addEventListener('click', () => {
-            currentColor = black;
-          });
-          document.querySelector('#eraser-button').addEventListener('click', () => {
-            currentColor = white;
-            
-          });
-          canvas.addEventListener("touchmove", function(evt) {
-              evt.preventDefault();
-          }, false);
-          canvas.addEventListener('mousedown', dragStart);
-          canvas.addEventListener('mouseup', dragEnd);
-          canvas.addEventListener('mouseout', dragEnd);
-          canvas.addEventListener('mousemove', (evt) => {
-            draw(evt.layerX, evt.layerY);
-          });
-          
-        }
-        if (flag == true) {
-            clear();
-            flag = false;
-        }
-        init();
-        initEventHandler();
-    });
+
+
+
+
+
+
+
+
+
 
 
     function sendServer(url, param){
