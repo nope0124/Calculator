@@ -4,6 +4,11 @@ herokuで公開しました。→<a href = "https://calculatorcanvas.herokuapp.c
 キャンバスに数式を描き、計算ボタンを押すと自動で計算してくれます。<br/>
 現在使える文字は0~9までの数字、+-×÷の符号だけです。
 
+## 注意事項
+<li>・行を超えての計算はできません。</li>
+<li>・計算には数秒かかります。</li>
+<li>・正しく識別するために十分に文字間を空けて入力してください。</li>
+
 ## 参考画像
 <img src = "https://raw.githubusercontent.com/nope0124/CalculatorCanvas/master/img.png" height = "300">
 
